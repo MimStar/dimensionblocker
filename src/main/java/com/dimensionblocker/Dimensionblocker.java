@@ -27,6 +27,10 @@ import java.util.Set;
 public class Dimensionblocker implements ModInitializer {
 	private static final String MOD_ID = "dimensionblocker";
 
+	public static String getMOD_ID(){
+		return MOD_ID;
+	}
+
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
 	// That way, it's clear which mod wrote info, warnings, and errors.
@@ -86,11 +90,11 @@ public class Dimensionblocker implements ModInitializer {
 			configData.getDimensions().add(dimension.getRegistryKey().getValue().toString());
 			StateSaverAndLoader.saveState(context.getSource().getServer());
 			context.getSource().sendFeedback(() -> Text.literal(getTranslation(playerData.getLanguage(), "blockdimension_success")).formatted(Formatting.GREEN), false);
-			context.getSource().getPlayer().playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1.0f, 1.0f);
+			context.getSource().getPlayer().playSoundToPlayer(SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1.0f, 1.0f);
 		}
 		else{
 			context.getSource().sendFeedback(() -> Text.literal(getTranslation(playerData.getLanguage(), "blockdimension_failure")).formatted(Formatting.RED), false);
-			context.getSource().getPlayer().playSound(SoundEvents.ENTITY_VILLAGER_NO, SoundCategory.MASTER, 1.0f, 1.0f);
+			context.getSource().getPlayer().playSoundToPlayer(SoundEvents.ENTITY_VILLAGER_NO, SoundCategory.MASTER, 1.0f, 1.0f);
 		}
 		return 1;
 	}
@@ -103,11 +107,11 @@ public class Dimensionblocker implements ModInitializer {
 			configData.getDimensions().remove(dimension.getRegistryKey().getValue().toString());
 			StateSaverAndLoader.saveState(context.getSource().getServer());
 			context.getSource().sendFeedback(() -> Text.literal(getTranslation(playerData.getLanguage(), "unblockdimension_success")).formatted(Formatting.GREEN), false);
-			context.getSource().getPlayer().playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1.0f, 1.0f);
+			context.getSource().getPlayer().playSoundToPlayer(SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1.0f, 1.0f);
 		}
 		else{
 			context.getSource().sendFeedback(() -> Text.literal(getTranslation(playerData.getLanguage(), "unblockdimension_failure")).formatted(Formatting.RED), false);
-			context.getSource().getPlayer().playSound(SoundEvents.ENTITY_VILLAGER_NO, SoundCategory.MASTER, 1.0f, 1.0f);
+			context.getSource().getPlayer().playSoundToPlayer(SoundEvents.ENTITY_VILLAGER_NO, SoundCategory.MASTER, 1.0f, 1.0f);
 		}
 		return 1;
 	}
@@ -119,11 +123,11 @@ public class Dimensionblocker implements ModInitializer {
 			playerData.setLanguage(new_language);
 			StateSaverAndLoader.saveState(Objects.requireNonNull(context.getSource().getServer()));
 			context.getSource().sendFeedback(() -> Text.literal(getTranslation(playerData.getLanguage(),"dimensionlanguage_success")).formatted(Formatting.GREEN), false);
-			context.getSource().getPlayer().playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1.0f, 1.0f);
+			context.getSource().getPlayer().playSoundToPlayer(SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1.0f, 1.0f);
 		}
 		else{
 			context.getSource().sendFeedback(() -> Text.literal(getTranslation(playerData.getLanguage(),"dimensionlanguage_failure")).formatted(Formatting.RED), false);
-			context.getSource().getPlayer().playSound(SoundEvents.ENTITY_VILLAGER_NO, SoundCategory.MASTER, 1.0f, 1.0f);
+			context.getSource().getPlayer().playSoundToPlayer(SoundEvents.ENTITY_VILLAGER_NO, SoundCategory.MASTER, 1.0f, 1.0f);
 		}
 		return 1;
 	}

@@ -2,6 +2,7 @@ package com.dimensionblocker;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
@@ -18,7 +19,7 @@ public class StateSaverAndLoader extends PersistentState {
     public HashMap<UUID,PlayerData> players = new HashMap<>();
 
     @Override
-    public NbtCompound writeNbt(NbtCompound nbt){
+    public NbtCompound writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup){
 
         NbtCompound playersNbt = new NbtCompound();
         players.forEach(((uuid, playerData) -> {
@@ -32,7 +33,7 @@ public class StateSaverAndLoader extends PersistentState {
         return nbt;
     }
 
-    public static StateSaverAndLoader createFromNbt(NbtCompound tag){
+    public static StateSaverAndLoader createFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup){
         StateSaverAndLoader state = new StateSaverAndLoader();
 
         NbtCompound playersNbt = tag.getCompound("players");
@@ -50,6 +51,12 @@ public class StateSaverAndLoader extends PersistentState {
         return state;
     }
 
+    private static final Type<StateSaverAndLoader> type = new Type<>(
+            StateSaverAndLoader::new,
+            StateSaverAndLoader::createFromNbt,
+            null
+    );
+
     public static PlayerData getPlayerState(LivingEntity player){
         StateSaverAndLoader serverState = getServerState(Objects.requireNonNull(player.getServer()));
         return serverState.players.computeIfAbsent(player.getUuid(), uuid -> new PlayerData());
@@ -64,11 +71,7 @@ public class StateSaverAndLoader extends PersistentState {
     public static StateSaverAndLoader getServerState(MinecraftServer server){
         PersistentStateManager persistentStateManager = Objects.requireNonNull(server.getWorld(World.OVERWORLD)).getPersistentStateManager();
 
-        StateSaverAndLoader state = persistentStateManager.getOrCreate(
-                StateSaverAndLoader::createFromNbt,
-                StateSaverAndLoader::new,
-                Dimensionblocker.getModId()
-        );
+        StateSaverAndLoader state = persistentStateManager.getOrCreate(type, Dimensionblocker.getMOD_ID());
 
         state.markDirty();
 
