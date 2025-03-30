@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin {
 
-    @Inject(method = "teleportTo", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "teleportTo(Lnet/minecraft/world/TeleportTarget;)Lnet/minecraft/server/network/ServerPlayerEntity;", at = @At("HEAD"), cancellable = true)
     private void onTeleport(TeleportTarget teleportTarget, CallbackInfoReturnable<Entity> cir){
         ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
         ConfigData configData = StateSaverAndLoader.getConfigState(teleportTarget.world().getServer());

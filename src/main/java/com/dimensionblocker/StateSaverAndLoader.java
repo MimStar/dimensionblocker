@@ -1,14 +1,18 @@
 package com.dimensionblocker;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
+import net.minecraft.world.PersistentStateType;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -18,6 +22,17 @@ public class StateSaverAndLoader extends PersistentState {
 
     public HashMap<UUID,PlayerData> players = new HashMap<>();
 
+    public StateSaverAndLoader(){
+        this.players = new HashMap<>();
+        this.config = new ConfigData();
+    }
+
+    public StateSaverAndLoader(Map<UUID,PlayerData> players, ConfigData config){
+        this.players = new HashMap<>(players);
+        this.config = config;
+    }
+
+    /*
     @Override
     public NbtCompound writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup){
 
@@ -50,10 +65,18 @@ public class StateSaverAndLoader extends PersistentState {
         }
         return state;
     }
+     */
 
-    private static final Type<StateSaverAndLoader> type = new Type<>(
+    public static final Codec<StateSaverAndLoader> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.unboundedMap(Codec.STRING.xmap(UUID::fromString, UUID::toString),
+                    PlayerData.CODEC).fieldOf("players").forGetter(state -> state.players),
+            ConfigData.CODEC.fieldOf("config").forGetter(state -> state.config)
+    ).apply(instance, StateSaverAndLoader::new));
+
+    private static final PersistentStateType<StateSaverAndLoader> type = new PersistentStateType<>(
+            Dimensionblocker.getMOD_ID(),
             StateSaverAndLoader::new,
-            StateSaverAndLoader::createFromNbt,
+            CODEC,
             null
     );
 
@@ -71,7 +94,7 @@ public class StateSaverAndLoader extends PersistentState {
     public static StateSaverAndLoader getServerState(MinecraftServer server){
         PersistentStateManager persistentStateManager = Objects.requireNonNull(server.getWorld(World.OVERWORLD)).getPersistentStateManager();
 
-        StateSaverAndLoader state = persistentStateManager.getOrCreate(type, Dimensionblocker.getMOD_ID());
+        StateSaverAndLoader state = persistentStateManager.getOrCreate(type);
 
         state.markDirty();
 
