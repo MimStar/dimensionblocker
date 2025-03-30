@@ -122,7 +122,7 @@ public class Dimensionblocker implements ModInitializer {
 			context.getSource().getPlayer().playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1.0f, 1.0f);
 		}
 		else{
-			context.getSource().sendFeedback(() -> Text.literal(getTranslation(playerData.getLanguage(),"dimensionlanguage_invalid")).formatted(Formatting.RED), false);
+			context.getSource().sendFeedback(() -> Text.literal(getTranslation(playerData.getLanguage(),"dimensionlanguage_failure")).formatted(Formatting.RED), false);
 			context.getSource().getPlayer().playSound(SoundEvents.ENTITY_VILLAGER_NO, SoundCategory.MASTER, 1.0f, 1.0f);
 		}
 		return 1;

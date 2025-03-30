@@ -6,14 +6,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ConfigData {
-    private List<String> dimensions = new ArrayList<>();
+    private ArrayList<String> dimensions = new ArrayList<>();
 
-    public synchronized List<String> getDimensions(){
+    public synchronized ArrayList<String> getDimensions(){
         return dimensions;
     }
 
     public synchronized void setDimensions(String dimensions){
-        this.dimensions = Stream.of(dimensions.split(";")).toList();
+        this.dimensions = new ArrayList<>(Stream.of(dimensions.split(";")).toList());
     }
 
     public synchronized String toString(){
