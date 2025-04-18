@@ -64,15 +64,11 @@ public class StateSaverAndLoader extends PersistentState {
     public static StateSaverAndLoader getServerState(MinecraftServer server){
         PersistentStateManager persistentStateManager = Objects.requireNonNull(server.getWorld(World.OVERWORLD)).getPersistentStateManager();
 
-        StateSaverAndLoader state = persistentStateManager.getOrCreate(
+        return persistentStateManager.getOrCreate(
                 StateSaverAndLoader::createFromNbt,
                 StateSaverAndLoader::new,
                 Dimensionblocker.getModId()
         );
-
-        state.markDirty();
-
-        return state;
     }
 
     public static ConfigData getConfigState(MinecraftServer server){
@@ -81,7 +77,6 @@ public class StateSaverAndLoader extends PersistentState {
     }
 
     public static void saveState(MinecraftServer server) {
-        PersistentStateManager persistentStateManager = Objects.requireNonNull(server.getWorld(World.OVERWORLD)).getPersistentStateManager();
-        persistentStateManager.save();
+        getServerState(server).markDirty();
     }
 }
