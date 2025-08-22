@@ -24,6 +24,9 @@ import org.slf4j.LoggerFactory;
 import java.util.Objects;
 import java.util.Set;
 
+import me.lucko.fabric.api.permissions.v0.Permissions;
+
+
 public class Dimensionblocker implements ModInitializer {
 	private static final String MOD_ID = "dimensionblocker";
 
@@ -69,6 +72,12 @@ public class Dimensionblocker implements ModInitializer {
 					.requires(source -> source.hasPermissionLevel(4))
 						.then(CommandManager.argument("dimension", DimensionArgumentType.dimension())
 								.executes(this::unblockDimensionExecute)));
+		});
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+			dispatcher.register(CommandManager.literal("getdimensionpermission")
+					.requires(source -> source.hasPermissionLevel(4))
+					.then(CommandManager.argument("dimension", DimensionArgumentType.dimension())
+							.executes(this::getDimensionPermissionExecute)));
 		});
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			dispatcher.register(CommandManager.literal("languagedimension")
@@ -129,6 +138,13 @@ public class Dimensionblocker implements ModInitializer {
 			context.getSource().sendFeedback(() -> Text.literal(getTranslation(playerData.getLanguage(),"dimensionlanguage_failure")).formatted(Formatting.RED), false);
 			context.getSource().getPlayer().playSoundToPlayer(SoundEvents.ENTITY_VILLAGER_NO, SoundCategory.MASTER, 1.0f, 1.0f);
 		}
+		return 1;
+	}
+
+	private int getDimensionPermissionExecute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+		ServerWorld dimension = DimensionArgumentType.getDimensionArgument(context,"dimension");
+		String permission = "dimensionblocker.allow." + dimension.getRegistryKey().getValue().toString().replace(":", ".");
+		context.getSource().sendFeedback(() -> Text.literal(permission), false);
 		return 1;
 	}
 }
