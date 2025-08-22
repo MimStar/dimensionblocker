@@ -22,9 +22,8 @@ import java.util.concurrent.ExecutionException;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin {
-
-    @Inject(method = "teleportTo(Lnet/minecraft/world/TeleportTarget;)Lnet/minecraft/server/network/ServerPlayerEntity;", at = @At("HEAD"), cancellable = true)
-    private void onTeleport(TeleportTarget teleportTarget, CallbackInfoReturnable<Entity> cir) {
+    @Inject(method = "teleportTo", at = @At("HEAD"), cancellable = true)
+    private void onTeleport(TeleportTarget teleportTarget, CallbackInfoReturnable<Entity> cir){
         ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
         ConfigData configData = StateSaverAndLoader.getConfigState(teleportTarget.world().getServer());
         PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
