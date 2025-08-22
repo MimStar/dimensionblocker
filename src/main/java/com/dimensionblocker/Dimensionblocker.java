@@ -16,6 +16,8 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
@@ -144,7 +146,10 @@ public class Dimensionblocker implements ModInitializer {
 	private int getDimensionPermissionExecute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
 		ServerWorld dimension = DimensionArgumentType.getDimensionArgument(context,"dimension");
 		String permission = "dimensionblocker.allow." + dimension.getRegistryKey().getValue().toString().replace(":", ".");
-		context.getSource().sendFeedback(() -> Text.literal(permission), false);
+		context.getSource().sendFeedback(() -> Text.literal(permission).styled(style -> style
+				.withClickEvent(new ClickEvent.CopyToClipboard(permission))
+				.withHoverEvent(new HoverEvent.ShowText(Text.literal("Click to copy")))
+		), false);
 		return 1;
 	}
 }
